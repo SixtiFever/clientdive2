@@ -9,6 +9,7 @@ function App() {
   const [productInput, setProductInput] = useState('');
   const [products, setProducts] = useState([]);
   const [clients, setClients] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState(null);
 
   // Function to handle adding a product to the list
   const handleAddProduct = () => {
@@ -32,10 +33,7 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <h1>Client Management</h1>
-      <button onClick={() => setIsModalOpen(true)}>Add Client</button>
-
+    <div className="App" style={{backgroundColor: 'white', height: '100vh'}}>
       {/* Modal */}
       {isModalOpen && (
         <div className="modal">
@@ -76,11 +74,42 @@ function App() {
       )}
 
       {/* Display added clients */}
-      <div className="client-list">
-        <h2>Client List</h2>
-        {clients.map((client, index) => (
+      <div className="client-list" style={{backgroundColor: 'red', display: 'flex', height: '100%'}}>
+
+        <div style={{width: '20%', backgroundColor: 'white', height: '100%'}}>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+                <h2>Client List</h2>
+                <button onClick={() => setIsModalOpen(true)}>+</button>
+            </div>
+            <div>
+                { clients.map((client, index) => {
+                    return (
+                        <a key={index} href='#' onClick={() => setSelectedCompany(clients.at(index))}><h3>{client.company}</h3></a>
+                    );
+                }) }
+            </div>
+                { clients.map((client, index) => {
+                    // <a key={index} href='#' onClick={() => alert(clients.at(index))}><h3>{client.company}</h3></a>
+                    <div key={index} className="client-card">
+                        <a href='#' onClick={() => alert(client.company)}><h3>{client.company}</h3></a>
+                    </div>
+                }) }
+        </div>
+
+        <div style={{width: '80%', backgroundColor: 'green', height: '100%', display: 'flex', flexDirection: 'column'}}>
+                { selectedCompany ? Object.entries(selectedCompany).map((e) => {
+                    return (
+                        <div>
+                            <p>{e[0]}:</p>
+                            <p>{e[1]}</p>
+                        </div>
+                    )
+                }) : 'No client selected' }
+        </div>
+
+        {/* {clients.map((client, index) => (
           <div key={index} className="client-card">
-            <h3>{client.company}</h3>
+            <a href='#' onClick={() => alert(client.company)}><h3>{client.company}</h3></a>
             <p>{client.companyInfo}</p>
             <ul>
               {client.products.map((product, idx) => (
@@ -88,7 +117,7 @@ function App() {
               ))}
             </ul>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   );
