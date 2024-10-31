@@ -1,23 +1,95 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 
 function App() {
+  // State to manage modal visibility and form data
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [company, setCompany] = useState('');
+  const [companyInfo, setCompanyInfo] = useState('');
+  const [productInput, setProductInput] = useState('');
+  const [products, setProducts] = useState([]);
+  const [clients, setClients] = useState([]);
+
+  // Function to handle adding a product to the list
+  const handleAddProduct = () => {
+    if (productInput.trim()) {
+      setProducts([...products, productInput]);
+      setProductInput('');
+    }
+  };
+
+  // Function to handle form submission
+  const handleSubmit = () => {
+    if (company && products.length > 0) {
+      const newClient = { company, products, companyInfo };
+      setClients([...clients, newClient]);
+      // Reset fields and close modal
+      setCompany('');
+      setProducts([]);
+      setCompanyInfo('')
+      setIsModalOpen(false);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Client Management</h1>
+      <button onClick={() => setIsModalOpen(true)}>Add Client</button>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Add New Client</h2>
+            <input
+              type="text"
+              placeholder="Enter company name"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+            />
+            <div>
+                <input 
+                    type='text'
+                    placeholder='About the organisation'
+                    value={companyInfo}
+                    onChange={(e) => setCompanyInfo(e.target.value)}
+                />
+            </div>
+            <div className="product-input">
+              <input
+                type="text"
+                placeholder="Enter product or service"
+                value={productInput}
+                onChange={(e) => setProductInput(e.target.value)}
+              />
+              <button onClick={handleAddProduct}>Add to List</button>
+            </div>
+            <ul>
+              {products.map((product, index) => (
+                <li key={index}>{product}</li>
+              ))}
+            </ul>
+            <button onClick={handleSubmit}>Submit</button>
+            <button onClick={() => setIsModalOpen(false)}>Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* Display added clients */}
+      <div className="client-list">
+        <h2>Client List</h2>
+        {clients.map((client, index) => (
+          <div key={index} className="client-card">
+            <h3>{client.company}</h3>
+            <p>{client.companyInfo}</p>
+            <ul>
+              {client.products.map((product, idx) => (
+                <li key={idx}>{product}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
